@@ -24,7 +24,7 @@ export default async function HomePage() {
             </p>
           </div>
           <div className="rounded-full border border-sky-400/50 bg-slate-900/60 px-4 py-1 text-xs font-medium uppercase tracking-wide text-sky-200 shadow-sm shadow-sky-500/40">
-            STAY COOL
+            IT'S FINE. PROBABLY.
           </div>
         </header>
 
