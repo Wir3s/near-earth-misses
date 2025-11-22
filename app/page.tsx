@@ -1,135 +1,119 @@
-import { getTodayNeos } from "@/lib/fetchNeos";
-import { Neo } from "@/types/neo";
+import { getTodayNeos } from "@/lib/fetchNeos"; // adjust path if needed
 
-export default async function Home() {
+export default async function HomePage() {
   const data = await getTodayNeos();
-
   const { date, count, neos } = data;
 
-  // Find the closest approach in miles (smallest miss distance)
-  const closestNeo: Neo | undefined =
-    neos.length > 0
-      ? [...neos].sort((a, b) => a.missMiles - b.missMiles)[0]
-      : undefined;
+  const nearest = neos.reduce((closest, neo) =>
+    neo.missMiles < closest.missMiles ? neo : closest
+  , neos[0]);
+
+  const hazardousCount = neos.filter((neo) => neo.hazardous).length;
 
   return (
-    <main className="min-h-screen bg-slate-950 text-slate-100 flex flex-col items-center px-4 py-8">
-      <div className="w-full max-w-4xl space-y-6">
-        <header className="space-y-2">
-          <h1 className="text-3xl sm:text-4xl font-bold">
-            Near-Earth Object Tracker
-          </h1>
-          <p className="text-slate-300 text-sm sm:text-base">
-            Data from NASA&apos;s Near-Earth Object Web Service (NeoWs) for{" "}
-            <span className="font-mono">{date}</span>.
-          </p>
+    <main className="starfield retro-grid min-h-screen">
+      <div className="relative z-10 mx-auto flex min-h-screen max-w-5xl flex-col gap-8 px-4 py-10 sm:px-6 lg:px-8">
+        {/* Top bar / logo */}
+        <header className="flex items-center justify-between gap-4">
+          <div>
+            <h1 className="text-xs font-semibold uppercase tracking-[0.3em] text-sky-300">
+              Neo Tracker
+            </h1>
+            <p className="mt-1 text-sm text-slate-400">
+              Near-Earth Object dashboard, for curious earthlings.
+            </p>
+          </div>
+          <div className="rounded-full border border-sky-400/50 bg-slate-900/60 px-4 py-1 text-xs font-medium uppercase tracking-wide text-sky-200 shadow-sm shadow-sky-500/40">
+            STAY COOL
+          </div>
         </header>
 
-        {closestNeo && (
-          <section className="rounded-xl border border-slate-800 bg-slate-900/60 p-4 sm:p-6 shadow-md space-y-2">
-            <p className="text-sm uppercase tracking-wide text-emerald-400">
-              Today&apos;s closest visitor
+        {/* Hero + danger summary row */}
+        <section className="grid gap-6 md:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
+          {/* Left: big hero card */}
+          <div className="rounded-2xl border border-slate-700/70 bg-slate-900/70 p-6 shadow-xl shadow-sky-950/60 backdrop-blur">
+            <p className="text-xs font-mono uppercase tracking-[0.25em] text-sky-300">
+              Today&apos;s Near Misses
             </p>
-            <h2 className="text-2xl font-semibold">
-              {closestNeo.name}
-              {closestNeo.hazardous && (
-                <span className="ml-2 inline-flex items-center rounded-full bg-red-500/20 px-2 py-0.5 text-xs font-medium text-red-300">
-                  Potentially Hazardous
-                </span>
-              )}
+            <h2 className="mt-3 text-2xl font-semibold text-slate-50 sm:text-3xl">
+              {count} objects are paying Earth a friendly visit today.
             </h2>
-            <p className="text-slate-200">
-              Closest approach:{" "}
-              <span className="font-mono">
-                {closestNeo.missMiles.toLocaleString(undefined, {
-                  maximumFractionDigits: 0,
-                })}{" "}
-                miles
-              </span>{" "}
-              (~
-              <span className="font-mono">
-                {closestNeo.missKm.toLocaleString(undefined, {
-                  maximumFractionDigits: 0,
-                })}
-              </span>{" "}
-              km)
+            <p className="mt-2 text-sm text-slate-300">
+              Data from NASA’s Near Earth Object Web Service. Updated for{" "}
+              <span className="font-semibold text-sky-300">{date}</span>.
             </p>
-            <p className="text-slate-300 text-sm">
-              Traveling at{" "}
-              <span className="font-mono">
-                {closestNeo.velocityMph.toLocaleString(undefined, {
-                  maximumFractionDigits: 0,
-                })}{" "}
-                mph
-              </span>{" "}
-              (
-              <span className="font-mono">
-                {closestNeo.velocityKps.toFixed(2)} km/s
-              </span>
-              ). Absolute magnitude:{" "}
-              <span className="font-mono">{closestNeo.magnitude}</span>.
-            </p>
-            <p className="text-slate-400 text-sm italic">
-              In other words: don&apos;t panic. But maybe give the sky a
-              respectful nod today.
-            </p>
-          </section>
-        )}
 
-        <section className="space-y-3">
-          <h2 className="text-xl font-semibold">
-            All NEOs for {date} ({count})
-          </h2>
-
-          {neos.length === 0 && (
-            <p className="text-slate-400 text-sm">
-              No near-Earth objects in the catalog for today. The universe is
-              giving us a breather.
-            </p>
-          )}
-
-          <ul className="grid gap-3 sm:gap-4 sm:grid-cols-2">
-            {neos.map((neo) => (
-              <li
-                key={neo.id}
-                className="rounded-lg border border-slate-800 bg-slate-900/50 p-3 sm:p-4 text-sm space-y-1"
-              >
-                <div className="flex items-center justify-between gap-2">
-                  <p className="font-semibold truncate">{neo.name}</p>
-                  {neo.hazardous && (
-                    <span className="ml-2 shrink-0 rounded-full bg-red-500/20 px-2 py-0.5 text-[10px] font-medium text-red-300">
-                      Hazardous
-                    </span>
-                  )}
-                </div>
-
-                <p className="text-slate-300">
-                  Miss distance:{" "}
-                  <span className="font-mono">
-                    {neo.missMiles.toLocaleString(undefined, {
-                      maximumFractionDigits: 0,
-                    })}{" "}
-                    mi
-                  </span>
+            <div className="mt-6 grid gap-4 text-sm sm:grid-cols-3">
+              <div className="rounded-xl border border-slate-700/80 bg-slate-950/70 p-4">
+                <p className="text-xs uppercase tracking-wide text-slate-400">
+                  Nearest miss
                 </p>
-
-                <p className="text-slate-400">
-                  Speed:{" "}
-                  <span className="font-mono">
-                    {neo.velocityMph.toLocaleString(undefined, {
-                      maximumFractionDigits: 0,
-                    })}{" "}
-                    mph
-                  </span>
+                <p className="mt-2 text-lg font-semibold text-sky-300">
+                  {nearest.missMiles.toLocaleString(undefined, {
+                    maximumFractionDigits: 0,
+                  })}{" "}
+                  mi
                 </p>
-
-                <p className="text-slate-500 text-[11px]">
-                  Mag: <span className="font-mono">{neo.magnitude}</span> | Date:{" "}
-                  <span className="font-mono">{neo.closeApproachDate}</span>
+                <p className="mt-1 text-xs text-slate-400">
+                  Object: <span className="font-medium">{nearest.name}</span>
                 </p>
-              </li>
-            ))}
-          </ul>
+              </div>
+
+              <div className="rounded-xl border border-slate-700/80 bg-slate-950/70 p-4">
+                <p className="text-xs uppercase tracking-wide text-slate-400">
+                  Potentially hazardous
+                </p>
+                <p className="mt-2 text-lg font-semibold text-amber-300">
+                  {hazardousCount}
+                </p>
+                <p className="mt-1 text-xs text-slate-400">
+                  NASA&apos;s classification, not ours. We&apos;re just
+                  narrating.
+                </p>
+              </div>
+
+              <div className="rounded-xl border border-slate-700/80 bg-slate-950/70 p-4">
+                <p className="text-xs uppercase tracking-wide text-slate-400">
+                  Mood of the day
+                </p>
+                <p className="mt-2 text-lg font-semibold text-emerald-300">
+                  Probably Fine
+                </p>
+                <p className="mt-1 text-xs text-slate-400">
+                  Statistically, you&apos;re more likely to stub your toe than
+                  be vaporized.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Right: placeholder for future Danger Meter component */}
+          <aside className="rounded-2xl border border-slate-700/70 bg-slate-900/75 p-4 shadow-lg shadow-sky-950/60 backdrop-blur">
+            <p className="text-xs font-mono uppercase tracking-[0.25em] text-sky-300">
+              Planetary Status
+            </p>
+            <div className="mt-4 h-32 rounded-xl border border-slate-700/70 bg-slate-950/80 p-4 flex flex-col justify-between">
+              {/* This is where we’ll drop the animated danger meter later */}
+              <p className="text-sm text-slate-200">
+                System check complete. All major extinction events are
+                currently on hold.
+              </p>
+              <p className="text-xs text-slate-500">
+                (More dramatic danger meter coming soon.)
+              </p>
+            </div>
+          </aside>
+        </section>
+
+        {/* Bottom area: list / table will go here later */}
+        <section className="mt-4 rounded-2xl border border-slate-800/70 bg-slate-950/70 p-4 text-sm text-slate-200">
+          <p className="text-xs uppercase tracking-wide text-slate-500 mb-2">
+            Object manifest
+          </p>
+          <p className="text-slate-400">
+            Below we&apos;ll show a sortable table or card list of today&apos;s
+            NEOs — names, distances, speeds, and a little commentary for each.
+          </p>
         </section>
       </div>
     </main>
