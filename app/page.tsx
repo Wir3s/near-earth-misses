@@ -1,14 +1,13 @@
-import { getTodayNeos } from "@/lib/fetchNeos"; // adjust path if needed
+import { getTodayNeos } from "@/lib/fetchNeos"; 
+import { DangerMeter } from "@/components/DangerMeter";
+import { getDangerLevel } from "@/lib/getDangerLevel";
 
 export default async function HomePage() {
   const data = await getTodayNeos();
   const { date, count, neos } = data;
 
-  const nearest = neos.reduce((closest, neo) =>
-    neo.missMiles < closest.missMiles ? neo : closest
-  , neos[0]);
-
-  const hazardousCount = neos.filter((neo) => neo.hazardous).length;
+  const danger = getDangerLevel(neos);
+  const { closest, hazardousCount } = danger;
 
   return (
     <main className="starfield retro-grid min-h-screen">
@@ -27,7 +26,8 @@ export default async function HomePage() {
             IT'S FINE. PROBABLY.
           </div>
         </header>
-
+{/* 🔥 New: Danger Meter */}
+        <DangerMeter neos={data.neos} />
         {/* Hero + danger summary row */}
         <section className="grid gap-6 md:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
           {/* Left: big hero card */}
@@ -49,13 +49,13 @@ export default async function HomePage() {
                   Nearest miss
                 </p>
                 <p className="mt-2 text-lg font-semibold text-sky-300">
-                  {nearest.missMiles.toLocaleString(undefined, {
+                  {closest.missMiles.toLocaleString(undefined, {
                     maximumFractionDigits: 0,
                   })}{" "}
                   mi
                 </p>
                 <p className="mt-1 text-xs text-slate-400">
-                  Object: <span className="font-medium">{nearest.name}</span>
+                  Object: <span className="font-medium">{closest.name}</span>
                 </p>
               </div>
 
