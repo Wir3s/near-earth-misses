@@ -1,6 +1,6 @@
 import { Neo } from "./neo";
 
-export type DangerLevel = {
+export type DangerSummary = {
   label: string;          // e.g. "Totally Fine", "Mildly Alarming", etc.
   tagline: string;        // the whimsical line
   percent: number;        // 0–100 danger meter fill
