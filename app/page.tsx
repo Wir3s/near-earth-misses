@@ -11,7 +11,7 @@ export default async function HomePage() {
   const { closest, hazardousCount } = danger;
 
   return (
-    <main className="starfield retro-grid min-h-screen">
+    <main className="starfield retro-grid crt min-h-screen">
       <div className="relative z-10 mx-auto flex min-h-screen max-w-5xl flex-col gap-8 px-4 py-10 sm:px-6 lg:px-8">
         {/* Top bar / logo */}
         <header className="flex items-center justify-between gap-4">
