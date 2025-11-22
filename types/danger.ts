@@ -6,5 +6,5 @@ export type DangerSummary = {
   percent: number;        // 0–100 danger meter fill
   closest: Neo;    // the closest-approaching asteroid
   hazardousCount: number; // how many are flagged as hazardous
-  closestMiles?: number;   // distance in miles of the closest approach
+  closestMiles: number;   // distance in miles of the closest approach
 };
