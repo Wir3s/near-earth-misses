@@ -1,6 +1,7 @@
 import { getTodayNeos } from "@/lib/fetchNeos"; 
 import { DangerMeter } from "@/components/DangerMeter";
 import { getDangerLevel } from "@/lib/getDangerLevel";
+import { NeoTable } from "@/components/NeoTable";
 
 export default async function HomePage() {
   const data = await getTodayNeos();
@@ -105,16 +106,22 @@ export default async function HomePage() {
           </aside>
         </section>
 
-        {/* Bottom area: list / table will go here later */}
-        <section className="mt-4 rounded-2xl border border-slate-800/70 bg-slate-950/70 p-4 text-sm text-slate-200">
-          <p className="text-xs uppercase tracking-wide text-slate-500 mb-2">
-            Object manifest
-          </p>
-          <p className="text-slate-400">
-            Below we&apos;ll show a sortable table or card list of today&apos;s
-            NEOs — names, distances, speeds, and a little commentary for each.
-          </p>
-        </section>
+        {/* Bottom area: list / table  */}
+<section className="mt-4 space-y-3">
+  <div className="rounded-2xl border border-slate-800/70 bg-slate-950/70 p-4 text-sm text-slate-200">
+    <p className="text-xs uppercase tracking-wide text-slate-500 mb-2">
+      Object manifest
+    </p>
+    <p className="text-slate-400 mb-3">
+      Today&apos;s catalog of near-Earth visitors. Distances are{" "}
+      <span className="font-medium text-sky-300">miss distances</span>—how
+      close they come to Earth&apos;s orbit, not where they&apos;re sitting
+      right now.
+    </p>
+
+    <NeoTable neos={neos} />
+  </div>
+</section>
       </div>
     </main>
   );
