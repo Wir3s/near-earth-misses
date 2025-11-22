@@ -78,35 +78,43 @@ export function DangerMeter({ neos }: DangerMeterProps) {
             </p>
           </div>
 
-          {/* DANGER TRACK */}
-          <div className="mt-3 relative h-4 w-full overflow-hidden rounded-full border border-slate-600/70 bg-gradient-to-r from-slate-900 via-slate-900 to-slate-900">
-            {/* Background hazard gradient band */}
-            <div className="absolute inset-0 bg-gradient-to-r from-emerald-900/60 via-amber-900/60 to-rose-900/60 opacity-80" />
+         {/* DANGER TRACK — upgraded border + inset glowing track */}
+<div className="mt-3 relative h-5 w-full rounded-full border border-slate-700/80 bg-slate-950/80 px-2 shadow-inner shadow-black/40">
 
-            {/* Animated fill bar */}
-            <div
-              className="relative h-full origin-left rounded-full bg-gradient-to-r from-emerald-400 via-amber-300 to-rose-500 shadow-[0_0_16px_rgba(248,250,252,0.45)] transition-[width] duration-700 ease-out"
-              style={{ width: `${clamped}%` }}
-            />
+  {/* Inner glowing hazard band */}
+  <div className="absolute inset-y-1 left-2 right-2 rounded-full bg-gradient-to-r from-emerald-400/25 via-amber-300/25 to-rose-500/25 blur-[1px]" />
 
-            {/* Indicator puck */}
+  {/* FILL BAR */}
+  <div
+    className="absolute inset-y-1 left-2 rounded-full bg-gradient-to-r from-emerald-400 via-amber-300 to-rose-500 shadow-[0_0_12px_rgba(255,255,255,0.35)] transition-[width] duration-700 ease-out"
+    style={{ width: `${clamped}%` }}
+  />
+
+           {/* 🔧 NEW: Mechanical-style needle */}
             <div
-              className="pointer-events-none absolute -top-1 h-6 w-6 rounded-full border border-slate-950/80 bg-slate-100/95 shadow-lg shadow-rose-500/40 transition-[left] duration-700 ease-out"
-              style={{ left: `calc(${clamped}% - 12px)` }}
+              className="pointer-events-none absolute inset-y-[-6px] flex items-center"
+              style={{ left: `calc(${clamped}% - 1px)` }}
             >
-              <div className="absolute inset-[5px] rounded-full bg-slate-900" />
+              <div className="relative h-9 w-[2px] bg-slate-100 shadow-[0_0_8px_rgba(248,250,252,0.8)]">
+                {/* Hub at the top */}
+                <div className="absolute -top-[4px] left-1/2 h-3 w-3 -translate-x-1/2 rounded-full border border-slate-900 bg-slate-200 shadow-[0_0_6px_rgba(15,23,42,0.8)]" />
+                {/* Pointer at bottom */}
+                {/* <div className="absolute -bottom-[4px] left-1/2 h-3 w-3 -translate-x-1/2 rotate-45 rounded-[2px] bg-slate-100 shadow-[0_0_6px_rgba(248,250,252,0.9)]" /> */}
+              </div>
             </div>
 
-            {/* Tick marks */}
-            <div className="pointer-events-none absolute inset-0 flex justify-between px-1">
-              {Array.from({ length: 5 }).map((_, idx) => (
-                <div
-                  key={idx}
-                  className="h-full w-px bg-slate-600/60 last:bg-rose-500/70"
-                />
-              ))}
-            </div>
-          </div>
+  {/* Tick marks */}
+  {/* <div className="pointer-events-none absolute inset-0 flex justify-between px-3">
+    {Array.from({ length: 6 }).map((_, idx) => (
+      <div
+        key={idx}
+        className={`h-full w-px ${
+          idx === 5 ? "bg-rose-500/80" : "bg-slate-600/50"
+        }`}
+      />
+    ))}
+  </div> */}
+</div>
 
           {/* C: STATUS TEXT BLOCK */}
           <p className="mt-3 text-xs text-slate-300">{tagline}</p>
