@@ -37,7 +37,7 @@ export function DangerMeter({ neos }: DangerMeterProps) {
   return (
     <section
       aria-label="Near Earth Object danger meter"
-      className="rounded-2xl border border-slate-700/80 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-4 sm:p-5 shadow-xl shadow-sky-950/60"
+      className="console-panel p-4 sm:p-5 shadow-xl shadow-sky-950/60"
     >
       {/* HEADER: RETRO CONSOLE TOP BAR */}
       <div className="flex flex-wrap items-center justify-between gap-3">

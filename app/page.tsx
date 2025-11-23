@@ -89,7 +89,7 @@ export default async function HomePage() {
           </div>
 
           {/* Right: placeholder for future Danger Meter component */}
-          <aside className="rounded-2xl border border-slate-700/70 bg-slate-900/75 p-4 shadow-lg shadow-sky-950/60 backdrop-blur">
+          <aside className="console-panel p-4 shadow-lg shadow-sky-950/60 backdrop-blur">
             <p className="text-xs font-mono uppercase tracking-[0.25em] text-sky-300">
               Planetary Status
             </p>
