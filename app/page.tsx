@@ -32,7 +32,7 @@ export default async function HomePage() {
         {/* Hero + danger summary row */}
         <section className="grid gap-6 md:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
           {/* Left: big hero card */}
-          <div className="rounded-2xl border border-slate-700/70 bg-slate-900/70 p-6 shadow-xl shadow-sky-950/60 backdrop-blur">
+          <div className="console-panel p-6 shadow-xl shadow-sky-950/60 backdrop-blur">
             <p className="text-xs font-mono uppercase tracking-[0.25em] text-sky-300">
               Today&apos;s Near Misses
             </p>
