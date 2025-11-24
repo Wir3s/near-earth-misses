@@ -118,9 +118,13 @@ export function ObjectManifest({ neos }: ObjectManifestProps) {
                   </div>
                   <div>
                     <p className="text-slate-500">Vibe check</p>
-                    <p className="font-mono text-emerald-200">
-                      {neo.hazardous ? "Cosmically sus" : "Probably fine"}
-                    </p>
+<p
+  className={`font-mono ${
+    neo.hazardous ? "text-amber-300" : "text-emerald-200"
+  }`}
+>
+  {neo.hazardous ? "Cosmically sus" : "Probably fine"}
+</p>
                   </div>
                 </div>
               </article>
