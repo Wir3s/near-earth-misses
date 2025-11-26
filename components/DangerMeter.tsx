@@ -5,6 +5,35 @@ type DangerMeterProps = {
   neos: Neo[];
 };
 
+function getDynamicGradient(percent: number) {
+  // Green zone: 0–33%
+  if (percent < 33) {
+    return "linear-gradient(to right, #34d399, #34d399)"; // solid green
+  }
+
+  // Yellow zone: 33–66%
+  if (percent < 66) {
+    // percent mapped to 0–1 within this zone
+    const t = (percent - 33) / (66 - 33);
+
+    return `linear-gradient(to right,
+      #34d399 0%,
+      #34d399 ${Math.max(0, 100 - t * 100)}%,
+      #facc15 100%
+    )`;
+  }
+
+  // Red zone: 66–100%
+  // percent mapped to 0–1 within this zone
+  const t = (percent - 66) / (100 - 66);
+
+  return `linear-gradient(to right,
+    #facc15 0%,
+    #facc15 ${Math.max(0, 100 - t * 100)}%,
+    #ef4444 100%
+  )`;
+}
+
 export function DangerMeter({ neos }: DangerMeterProps) {
   // Handle "no data" days gracefully
   if (!neos || neos.length === 0) {
@@ -88,10 +117,7 @@ export function DangerMeter({ neos }: DangerMeterProps) {
   className="absolute inset-y-1 left-2 rounded-full shadow-[0_0_12px_rgba(255,255,255,0.35)] transition-[width] duration-700 ease-out"
   style={{
     width: `${clamped}%`,
-    background: `linear-gradient(to right,
-      ${clamped < 33 ? '#34d399' : '#34d399'},
-      ${clamped < 33 ? '#34d399' : clamped < 66 ? '#facc15' : '#ef4444'}
-    )`
+    background: getDynamicGradient(clamped)
   }}
 />
 
