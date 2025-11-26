@@ -84,10 +84,16 @@ export function DangerMeter({ neos }: DangerMeterProps) {
   <div className="absolute inset-y-1 left-2 right-2 rounded-full bg-gradient-to-r from-emerald-400/25 via-amber-300/25 to-rose-500/25 blur-[1px]" />
 
   {/* FILL BAR */}
-  <div
-    className="absolute inset-y-1 left-2 rounded-full bg-gradient-to-r from-emerald-400 via-amber-300 to-rose-500 shadow-[0_0_12px_rgba(255,255,255,0.35)] transition-[width] duration-700 ease-out"
-    style={{ width: `${clamped}%` }}
-  />
+<div
+  className="absolute inset-y-1 left-2 rounded-full shadow-[0_0_12px_rgba(255,255,255,0.35)] transition-[width] duration-700 ease-out"
+  style={{
+    width: `${clamped}%`,
+    background: `linear-gradient(to right,
+      ${clamped < 33 ? '#34d399' : '#34d399'},
+      ${clamped < 33 ? '#34d399' : clamped < 66 ? '#facc15' : '#ef4444'}
+    )`
+  }}
+/>
 
   {/* Mechanical-style needle, vertically centered */}
   <div
