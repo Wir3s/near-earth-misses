@@ -6,6 +6,8 @@ type ObjectManifestProps = {
   neos: Neo[];
 };
 
+
+
 export function ObjectManifest({ neos }: ObjectManifestProps) {
   if (!neos || neos.length === 0) {
     return (
@@ -71,64 +73,80 @@ export function ObjectManifest({ neos }: ObjectManifestProps) {
           {neos
             .slice()
             .sort((a, b) => a.missMiles - b.missMiles)
-            .map((neo) => (
-              <article
-                key={neo.id}
-                className="rounded-xl border border-slate-800 bg-slate-950/80 p-3"
-              >
-                <div className="flex items-center justify-between gap-2">
-                  <h3 className="text-sm font-semibold text-sky-200">
-                    {neo.name}
-                  </h3>
-                  {neo.hazardous && (
-                    <span className="inline-flex items-center gap-1 rounded-full border border-amber-500/70 bg-amber-950/40 px-2 py-0.5 text-[0.65rem] font-mono uppercase tracking-[0.16em] text-amber-200">
-                      ⚠️ Hazardous
+            .map((neo) => {
+              const hasMoid =
+                typeof neo.moidKm === "number" && neo.moidKm > 0;
+
+              return (
+                <article
+                  key={neo.id}
+                  className="rounded-xl border border-slate-800 bg-slate-950/80 p-3"
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <h3 className="text-sm font-semibold text-sky-200">
+                      {neo.name}
+                    </h3>
+                    {neo.hazardous && (
+                      <span className="inline-flex items-center gap-1 rounded-full border border-amber-500/70 bg-amber-950/40 px-2 py-0.5 text-[0.65rem] font-mono uppercase tracking-[0.16em] text-amber-200">
+                        ⚠️ Hazardous
+                      </span>
+                    )}
+                  </div>
+
+                  <p className="mt-1 text-[0.7rem] text-slate-400">
+                    Closest approach:{" "}
+                    <span className="font-mono text-slate-200">
+                      {neo.closeApproachDate}
                     </span>
-                  )}
-                </div>
+                  </p>
 
-                <p className="mt-1 text-[0.7rem] text-slate-400">
-                  Closest approach:{" "}
-                  <span className="font-mono text-slate-200">
-                    {neo.closeApproachDate}
-                  </span>
-                </p>
+                  <div className="mt-2 grid grid-cols-2 gap-2 text-[0.7rem]">
+                    <div>
+                      <p className="text-slate-500">Miss distance</p>
+                      <p className="font-mono text-slate-100">
+                        {neo.missMiles.toLocaleString(undefined, {
+                          maximumFractionDigits: 0,
+                        })}{" "}
+                        mi
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-slate-500">Speed</p>
+                      <p className="font-mono text-slate-100">
+                        {Math.round(neo.velocityMph).toLocaleString()} mph
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-slate-500">Brightness (H)</p>
+                      <p className="font-mono text-slate-100">
+                        {neo.magnitude.toFixed(1)}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-slate-500">Vibe check</p>
+                      <p
+                        className={
+                          neo.hazardous
+                            ? "font-mono text-amber-200"
+                            : "font-mono text-emerald-200"
+                        }
+                      >
+                        {neo.hazardous ? "Cosmically sus" : "Probably fine"}
+                      </p>
+                    </div>
+                  </div>
 
-                <div className="mt-2 grid grid-cols-2 gap-2 text-[0.7rem]">
-                  <div>
-                    <p className="text-slate-500">Miss distance</p>
-                    <p className="font-mono text-slate-100">
-                      {neo.missMiles.toLocaleString(undefined, {
-                        maximumFractionDigits: 0,
-                      })}{" "}
-                      mi
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-slate-500">Speed</p>
-                    <p className="font-mono text-slate-100">
-                      {Math.round(neo.velocityMph).toLocaleString()} mph
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-slate-500">Brightness (H)</p>
-                    <p className="font-mono text-slate-100">
-                      {neo.magnitude.toFixed(1)}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-slate-500">Vibe check</p>
-<p
-  className={`font-mono ${
-    neo.hazardous ? "text-amber-300" : "text-emerald-200"
-  }`}
->
-  {neo.hazardous ? "Cosmically sus" : "Probably fine"}
-</p>
-                  </div>
-                </div>
-              </article>
-            ))}
+                  {/* Mobile MOID line */}
+                  <p className="mt-2 text-[0.7rem] text-slate-400">
+                    {hasMoid
+                      ? `Orbit miss distance (MOID): ~${Math.round(
+                          neo.moidKm!
+                        ).toLocaleString()} km`
+                      : "Orbit miss distance (MOID) not available."}
+                  </p>
+                </article>
+              );
+            })}
         </div>
 
         {/* Desktop: compact table */}
@@ -163,6 +181,9 @@ export function ObjectManifest({ neos }: ObjectManifestProps) {
                   const hazardLabel = neo.hazardous
                     ? "Potentially hazardous"
                     : "Not classified as hazardous";
+
+                  const hasMoid =
+                    typeof neo.moidKm === "number" && neo.moidKm > 0;
 
                   return (
                     <tr key={neo.id} className="hover:bg-slate-900/70">
@@ -199,12 +220,24 @@ export function ObjectManifest({ neos }: ObjectManifestProps) {
                           {neo.hazardous ? "Hazardous" : "Chill"}
                         </span>
                       </td>
-                      <td className="px-3 py-2 align-top text-[0.7rem] text-slate-300">
-                        {distanceLabel}{" "}
-                        <span className="text-slate-500">
-                          ({hazardLabel}.)
-                        </span>
-                      </td>
+<td className="px-3 py-2 align-top text-[0.7rem] text-slate-300">
+  {distanceLabel}{" "}
+  <span className="text-slate-500">({hazardLabel}.)</span>
+  <br />
+  {typeof neo.moidKm === "number" ? (
+    <span className="text-sky-300">
+      Orbit miss distance (MOID):{" "}
+      {neo.moidKm.toLocaleString(undefined, {
+        maximumFractionDigits: 0,
+      })}{" "}
+      km
+    </span>
+  ) : (
+    <span className="text-slate-500">
+      Orbit miss distance (MOID) not available.
+    </span>
+  )}
+</td>
                     </tr>
                   );
                 })}

@@ -1,50 +1,36 @@
-import { Neo, NeoApiResponse } from "@/types/neo";
+import type { NeoApiResponse } from "@/types/neo";
 
-export async function getTodayNeos(): Promise<NeoApiResponse> {
-  const apiKey = process.env.NASA_API_KEY;
-  if (!apiKey) {
-    throw new Error("NASA_API_KEY is not set");
+function getBaseUrl() {
+  // Use NEXT_PUBLIC_BASE_URL if you’ve set it, otherwise fall back.
+  if (process.env.NEXT_PUBLIC_BASE_URL) {
+    return process.env.NEXT_PUBLIC_BASE_URL;
   }
 
-  const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}`;
+  }
 
-  const url = new URL("https://api.nasa.gov/neo/rest/v1/feed");
-  url.searchParams.set("start_date", today);
-  url.searchParams.set("end_date", today);
-  url.searchParams.set("api_key", apiKey);
+  return "http://localhost:3000";
+}
 
-  const res = await fetch(url.toString(), {
-    // optional: make it clearly dynamic
-    cache: "no-store",
+export async function getTodayNeos(): Promise<NeoApiResponse> {
+  const baseUrl = getBaseUrl();
+
+  const res = await fetch(`${baseUrl}/api/neo/today`, {
+    // cache rules as you like; this keeps it reasonably fresh
+    next: { revalidate: 300 },
   });
 
   if (!res.ok) {
-    throw new Error(`NASA API request failed with ${res.status}`);
+    throw new Error("Failed to fetch NEO data");
   }
 
-  const data = await res.json();
+  const data: NeoApiResponse = await res.json();
 
-  const rawNeos = data.near_earth_objects?.[today] ?? [];
+  // 🔍 Optional: sanity check
+  if (data.neos.length > 0) {
+    console.log("fetchNeos sample NEO:", data.neos[0]);
+  }
 
-  const neos: Neo[] = rawNeos.map((n: any) => {
-    const closeApproach = n.close_approach_data[0];
-
-    return {
-      id: n.id,
-      name: n.name,
-      closeApproachDate: closeApproach.close_approach_date,
-      missMiles: Number(closeApproach.miss_distance.miles),
-      missKm: Number(closeApproach.miss_distance.kilometers),
-      velocityMph: Number(closeApproach.relative_velocity.miles_per_hour),
-      velocityKps: Number(closeApproach.relative_velocity.kilometers_per_second),
-      magnitude: n.absolute_magnitude_h,
-      hazardous: n.is_potentially_hazardous_asteroid,
-    };
-  });
-
-  return {
-    date: today,
-    count: neos.length,
-    neos,
-  };
+  return data;
 }

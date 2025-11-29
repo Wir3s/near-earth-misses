@@ -3,6 +3,7 @@ import { DangerMeter } from "@/components/DangerMeter";
 import { getDangerLevel } from "@/lib/getDangerLevel";
 import { NeoTable } from "@/components/NeoTable";
 import { ObjectManifest } from "@/components/ObjectManifest";
+import { PlanetaryStatus } from "@/components/PlanetaryStatus";
 
 
 export default async function HomePage() {
@@ -90,22 +91,10 @@ export default async function HomePage() {
             </div>
           </div>
 
-          {/* Right: placeholder for future Danger Meter component */}
-          <aside className="console-panel p-4 shadow-lg shadow-sky-950/60 backdrop-blur">
-            <p className="text-xs font-mono uppercase tracking-[0.25em] text-sky-300">
-              Planetary Status
-            </p>
-            <div className="mt-4 h-32 rounded-xl border border-slate-700/70 bg-slate-950/80 p-4 flex flex-col justify-between">
-              {/* This is where we’ll drop the animated danger meter later */}
-              <p className="text-sm text-slate-200">
-                System check complete. All major extinction events are
-                currently on hold.
-              </p>
-              <p className="text-xs text-slate-500">
-                (More dramatic danger meter coming soon.)
-              </p>
-            </div>
-          </aside>
+
+  {/* Right: Planetary Status with MOID info */}
+  <PlanetaryStatus neos={neos} />
+
         </section>
 
         {/* Bottom area: list / table  */}
