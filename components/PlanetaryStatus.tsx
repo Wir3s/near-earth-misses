@@ -23,9 +23,6 @@ export function PlanetaryStatus({ neos }: PlanetaryStatusProps) {
   }
 
   // Find something interesting to talk about:
-  // 1) hazardous with MOID
-  // 2) otherwise, smallest MOID
-  // 3) otherwise, closest approach distance
   const withMoid = neos.filter(
     (neo) => typeof neo.moidKm === "number" && neo.moidKm! > 0
   );
@@ -61,23 +58,30 @@ export function PlanetaryStatus({ neos }: PlanetaryStatusProps) {
         {hasMoid ? (
           <>
             <p>
-              Today&apos;s orbital headline:{" "}
-              <span className="font-semibold text-sky-200">
-                {focusNeo?.name}
-              </span>{" "}
-              makes its closest *orbital* pass at roughly{" "}
-              <span className="font-mono text-emerald-300">
-                {Math.round(moidKm / 1_000).toLocaleString()} km
-              </span>{" "}
-              from Earth&apos;s orbit (MOID).
-            </p>
-            <p className="text-xs text-slate-400">
-              MOID (Minimum Orbit Intersection Distance) isn&apos;t today&apos;s
-              flyby distance — it&apos;s how close the two{" "}
-              <em>paths</em> come over time. That&apos;s why something farther
-              away today can still be flagged as &quot;potentially
-              hazardous.&quot;
-            </p>
+      Today&apos;s orbital headline:{" "}
+      <span className="font-semibold text-sky-200">
+        {focusNeo?.name}
+      </span>{" "}
+      makes its closest <em>orbital</em> pass at about{" "}
+      <span className="font-mono text-emerald-300">
+        {Math.round(moidKm / 1_000).toLocaleString()} km
+      </span>{" "}
+      from Earth&apos;s path — its MOID.
+    </p>
+
+    <p className="text-xs text-slate-400 leading-relaxed">
+      MOID — <em>Minimum Orbit Intersection Distance</em> — measures how closely Earth&apos;s
+      lane and the asteroid&apos;s lane can cross over long stretches of time.
+      Think racetrack <em>lanes</em>, not the exact positions of the racers.
+    </p>
+
+    <p className="text-xs text-slate-500 leading-relaxed">
+      A small MOID means the orbits skim closer together, which is why NASA
+      keeps tabs on it — cosmic neighborhood watch. An object can be
+      millions of miles away today and land on the &quot;potentially
+      hazardous&quot; list because its future orbit might swing too
+      close for comfort.
+    </p>
           </>
         ) : (
           <>
@@ -88,7 +92,7 @@ export function PlanetaryStatus({ neos }: PlanetaryStatusProps) {
             </p>
             <p className="text-xs text-slate-500">
               When MOID data is present, we&apos;ll show how close an orbit
-              comes to Earth&apos;s orbit — not just today&apos;s flyby.
+              comes to Earth&apos;s — not just today&apos;s flyby.
             </p>
           </>
         )}
